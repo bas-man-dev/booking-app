@@ -15,12 +15,18 @@ func main() {
 	fmt.Printf("We have %v tickets and %v available\n", conferenceTickets, remainingTickets)
 	fmt.Println("Continue here to get your tickets to attend the conference")
 
-	var userName string
+	var firstName string
+	var lastName string
+	var email string
 	var userTickets int
 
-	fmt.Println("Please enter your name: ")
-	fmt.Scan(&userName)
-	fmt.Println("How many tickets would you like?")
+	fmt.Println("Please enter your first name: ")
+	fmt.Scan(&firstName)
+	fmt.Println("Please enter your last name: ")
+	fmt.Scan(&lastName)
+	fmt.Println("Please enter your email address: ")
+	fmt.Scan(&email)
+	fmt.Println("How many tickets would you like? ")
 	fmt.Scan(&userTickets)
 
 	now := time.Now()
@@ -28,7 +34,7 @@ func main() {
 	// userName = "Jon"
 	// userTickets = 2
 
-	fmt.Printf("User: %v || Tickets: %v \n", userName, userTickets)
-	fmt.Println("Purchased at: ", now.Hour(), ":", now.Minute(), now.Day(), now.Month(), now.Year())
+	fmt.Printf("Thank you for the purchase %v %v.\nYou bought %v tickets.\nYou will receive a confirmation email to:\n%v\n", firstName, lastName, userTickets, email)
+	fmt.Printf("Purchased at: %v:%v on the %v %v %v \n", now.Hour(), now.Minute(), now.Day(), now.Month(), now.Year())
 
 }
