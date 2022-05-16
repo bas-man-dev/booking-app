@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -18,6 +19,10 @@ type UserData struct {
 	email       string
 	userTickets uint
 }
+
+// create a wait group so that programme doesn't close with unfinished tasks
+
+var wg = sync.WaitGroup{}
 
 func main() {
 
@@ -38,10 +43,13 @@ func main() {
 		// Do the transaction:
 
 		updateBookings(userTickets, firstName, lastName, email)
+
+		wg.Add(1)
 		go sendTicket(userTickets, firstName, lastName, email) //'go' prefix allows concurrency to improve performance.
 
 		fmt.Printf("Remaining tickets: %v \n", remainingTickets)
 
+		wg.Wait()
 		// firstNames := getFirstNames()
 		// fmt.Printf("List of bookings clients are: %v \n", bookings)
 
@@ -120,4 +128,6 @@ func sendTicket(userTickets uint, firstName string, lastName string, email strin
 	fmt.Println("-----------------")
 	fmt.Printf("Sending ticket: \n%v\nto email address %v\n", ticket, email)
 	fmt.Println("-----------------")
+
+	wg.Done()
 }
