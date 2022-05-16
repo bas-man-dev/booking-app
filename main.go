@@ -38,6 +38,7 @@ func main() {
 		// Do the transaction:
 
 		updateBookings(userTickets, firstName, lastName, email)
+		go sendTicket(userTickets, firstName, lastName, email) //'go' prefix allows concurrency to improve performance.
 
 		fmt.Printf("Remaining tickets: %v \n", remainingTickets)
 
@@ -112,4 +113,11 @@ func updateBookings(userTickets uint, firstName string, lastName string, email s
 	fmt.Printf("Thank you for the purchase %v %v.\nYou bought %v tickets.\nYou will receive a confirmation email to:\n%v\n", firstName, lastName, userTickets, email)
 	fmt.Printf("Purchased at: %v:%v on the %v %v %v \n", now.Hour(), now.Minute(), now.Day(), now.Month(), now.Year())
 
+}
+
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	var ticket = fmt.Sprintf("%v tickets for %v %v ", userTickets, firstName, lastName)
+	fmt.Println("-----------------")
+	fmt.Printf("Sending ticket: \n%v\nto email address %v\n", ticket, email)
+	fmt.Println("-----------------")
 }
