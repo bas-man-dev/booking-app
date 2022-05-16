@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"strconv"
 	"time"
 )
 
@@ -10,7 +10,7 @@ const conferenceTickets uint = 50
 
 var conferenceName = "Fantastic Conference"
 var remainingTickets uint = 50
-var bookings = []string{}
+var bookings = make([]map[string]string, 0) // NB we changed from a slice of strings to a slice of maps
 
 func main() {
 
@@ -23,7 +23,7 @@ func main() {
 
 		// Validate user details
 
-		detailsCheck := userDetailsValidation(firstName, lastName, email, userTickets)
+		detailsCheck := UserDetailsValidation(firstName, lastName, email, userTickets, remainingTickets)
 		if !detailsCheck {
 			continue
 		}
@@ -34,8 +34,8 @@ func main() {
 
 		fmt.Printf("Remaining tickets: %v \n", remainingTickets)
 
-		firstNames := getFirstNames()
-		fmt.Printf("The first names of bookings clients are: %v \n", firstNames)
+		// firstNames := getFirstNames()
+		fmt.Printf("List of bookings clients are: %v \n", bookings)
 
 		if remainingTickets == 0 {
 			fmt.Printf("%v fully booked... See you again next year!\n", conferenceName)
@@ -57,8 +57,7 @@ func getFirstNames() []string {
 
 	firstNames := []string{}
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		firstNames = append(firstNames, names[0])
+		firstNames = append(firstNames, booking["firstName"])
 	}
 	return firstNames
 }
@@ -84,32 +83,24 @@ func getUserDetails() (string, string, string, uint) {
 	return firstName, lastName, email, userTickets
 }
 
-func userDetailsValidation(firstName string, lastName string, email string, userTickets uint) bool {
-
-	isValidName := len(firstName) >= 2 && len(lastName) >= 2
-	isValidEmail := strings.Contains(email, "@")
-	isValidTickets := userTickets > 0 && userTickets <= remainingTickets
-
-	if !isValidName {
-		fmt.Println("First name and Last name need to be 2 or more characters long")
-		return false
-	}
-	if !isValidEmail {
-		fmt.Println("email address needs an '@' sign")
-		return false
-	}
-	if !isValidTickets {
-		fmt.Println("Ticket number was invalid.")
-		return false
-	}
-	return true
-}
-
 func updateBookings(userTickets uint, firstName string, lastName string, email string) {
 	now := time.Now()
 
 	remainingTickets -= userTickets
-	bookings = append(bookings, firstName+" "+lastName)
+
+	// Create a map to store users
+
+	var userData = make(map[string]string)
+
+	// Add user data to map
+
+	userData["firstName"] = firstName
+	userData["lastName"] = lastName
+	userData["email"] = email
+	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+
+	bookings = append(bookings, userData)
+	fmt.Printf("List of bookings is : %v\n", bookings)
 
 	fmt.Printf("Thank you for the purchase %v %v.\nYou bought %v tickets.\nYou will receive a confirmation email to:\n%v\n", firstName, lastName, userTickets, email)
 	fmt.Printf("Purchased at: %v:%v on the %v %v %v \n", now.Hour(), now.Minute(), now.Day(), now.Month(), now.Year())
