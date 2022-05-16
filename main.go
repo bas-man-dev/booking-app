@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 )
 
@@ -10,7 +9,15 @@ const conferenceTickets uint = 50
 
 var conferenceName = "Fantastic Conference"
 var remainingTickets uint = 50
-var bookings = make([]map[string]string, 0) // NB we changed from a slice of strings to a slice of maps
+var bookings = make([]UserData, 0) // NB we changed from a slice of maps to a slice of struct {UserData}
+// create a struct for different variable types
+
+type UserData struct {
+	firstName   string
+	lastName    string
+	email       string
+	userTickets uint
+}
 
 func main() {
 
@@ -35,7 +42,7 @@ func main() {
 		fmt.Printf("Remaining tickets: %v \n", remainingTickets)
 
 		// firstNames := getFirstNames()
-		fmt.Printf("List of bookings clients are: %v \n", bookings)
+		// fmt.Printf("List of bookings clients are: %v \n", bookings)
 
 		if remainingTickets == 0 {
 			fmt.Printf("%v fully booked... See you again next year!\n", conferenceName)
@@ -57,7 +64,7 @@ func getFirstNames() []string {
 
 	firstNames := []string{}
 	for _, booking := range bookings {
-		firstNames = append(firstNames, booking["firstName"])
+		firstNames = append(firstNames, booking.firstName)
 	}
 	return firstNames
 }
@@ -88,16 +95,16 @@ func updateBookings(userTickets uint, firstName string, lastName string, email s
 
 	remainingTickets -= userTickets
 
-	// Create a map to store users
+	// Create a map to store users *Updated to struct*
 
-	var userData = make(map[string]string)
+	var userData = UserData{
+		firstName:   firstName,
+		lastName:    lastName,
+		email:       email,
+		userTickets: userTickets,
+	}
 
-	// Add user data to map
-
-	userData["firstName"] = firstName
-	userData["lastName"] = lastName
-	userData["email"] = email
-	userData["numberOfTickets"] = strconv.FormatUint(uint64(userTickets), 10)
+	// Removed the previous key:value inits
 
 	bookings = append(bookings, userData)
 	fmt.Printf("List of bookings is : %v\n", bookings)
